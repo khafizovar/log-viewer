@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<script src="js/kendo/js/jquery.min.js"></script>
+<script src="js/kendo/js/kendo.all.min.js"></script>
+
+<script src="js/websockets/socketsModule.js"></script>
+
+<link href="js/kendo/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="js/kendo/styles/kendo.default.min.css" rel="stylesheet" />
+</head>
+<body>
+	<script src="js/kendo/data/people.js"></script>
+
+	<div id="header">
+		<button class="k-button" onclick="freezeButtonHandler()" title="«апретить/разрешить обновление данных с сервера" ><img id="lock_image" src="images/lock_open.png"  id="dagger" /></button>
+	</div>
+
+	<div id="example" class="k-content">
+		<div id="clientsDb">
+			<div id="grid" style="height: 100%"></div>
+		</div>
+
+		<style scoped>
+#clientsDb {
+	width: 100%;
+	height: 800px;
+	margin: 30px auto;
+	padding: 51px 4px 0 4px;
+}
+</style>
+		<script>
+			$(document).ready(function() {
+				$("#grid").kendoGrid({
+					dataSource : {
+						pageSize : 200
+					},
+					groupable : true,
+					sortable : true,
+					reorderable : true,
+					resizable : true,
+					filterable : true,
+					pageable : false, /*{
+						refresh : true,
+						pageSizes : true
+					},*/
+					columns : [ {
+						field : "id",
+						width : 50
+					}, {
+						field : "message"
+					}, {
+						width : 100,
+						field : "level"
+					}, {
+						width : 200,
+						field : "logger"
+					}, {
+						width : 100,
+						field : "dated",
+					//template: '#= kendo.toString(BirthDate,"dd MMMM yyyy") #'
+					}, {
+						width : 50,
+						field : "userid"
+					} ]
+				});
+
+				// window.setInterval("SocketModule.send('tester')", 4000);
+
+				// $.get('LogsViewServlet',{user:"test"},function(responseText) { 
+				/*var grid = $("#grid").data("kendoGrid");
+				var new_data = jQuery.parseJSON(responseText);
+				grid.dataSource.data(new_data);*/
+
+				// });
+				SocketModule.init("ws://10.15.6.140:8181/", "grid");
+
+			});
+
+			function freezeButtonHandler() {
+				if(SocketModule.refreshGrid === true) {
+					SocketModule.refreshGrid = false;
+					$("#lock_image").attr("src","images/lock_close.png");
+				} else {
+					SocketModule.refreshGrid = true;
+					$("#lock_image").attr("src","images/lock_open.png");
+				}
+			}
+		</script>
+
+	</div>
+
+</body>
+</html>

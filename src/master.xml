@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="masterMapper">
+	<resultMap id="masterResult" type="org.tatasu.model.Logs">
+		<result property="user_id" column="user_id" jdbcType="VARCHAR" />
+		<result property="dated" column="dated" jdbcType="VARCHAR" />
+		<result property="logger" column="logger" jdbcType="VARCHAR" />
+		<result property="level" column="level" jdbcType="VARCHAR" />
+		<result property="message" column="message" jdbcType="VARCHAR" />
+		<result property="id" column="id" jdbcType="NUMERIC" />
+	</resultMap>
+
+	<select id="selectLogs" parameterType="int" resultMap="masterResult">
+		SELECT user_id, to_char(dated, 'DD-MM-YYYY hh24:mi:ss')  dated, logger, level, message, id  FROM logs WHERE id = #{id}
+	</select>
+	
+	<select id="selectAll" resultMap="masterResult">
+		SELECT user_id, to_char(dated, 'DD-MM-YYYY hh24:mi:ss')  dated, logger, level, message, id  FROM logs ORDER BY id DESC LIMIT 50
+	</select>
+	
+	<select id="selectByLimit" parameterType="int" resultMap="masterResult">
+		SELECT user_id, to_char(dated, 'DD-MM-YYYY hh24:mi:ss')  dated, logger, level, message, id  FROM logs ORDER BY id DESC LIMIT = #{limit}
+	</select>
+
+</mapper>
